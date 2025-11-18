@@ -1,0 +1,116 @@
+<html>
+
+<head>
+   <link rel="stylesheet" href="css/flex2html.css">
+   <script type="text/javascript" src="js/flex2html.min.js"></script>
+
+   <!-- JSONEditor (美觀 JSON 編輯器) -->
+   <link href="https://cdn.jsdelivr.net/npm/jsoneditor@latest/dist/jsoneditor.min.css" rel="stylesheet">
+   <script src="https://cdn.jsdelivr.net/npm/jsoneditor@latest/dist/jsoneditor.min.js"></script>
+
+   <style>
+      body {
+         margin: 0;
+         height: 100vh;
+         display: flex;
+         font-family: Arial, sans-serif;
+      }
+
+      /* 左右區塊佈局 */
+      .left-panel {
+         width: 80%;
+         border-right: 1px solid #ccc;
+         overflow-y: auto;
+         padding: 15px;
+         box-sizing: border-box;
+      }
+
+      .right-panel {
+         width: 80%;
+         padding: 15px;
+         box-sizing: border-box;
+         display: flex;
+         flex-direction: column;
+         background: #f9f9f9;
+      }
+
+      /* JSONEditor 區塊 */
+      #jsoneditor {
+         flex: 1;
+         border: 1px solid #ccc;
+         border-radius: 6px;
+      }
+
+      /* 按鈕 */
+      #browseBtn {
+         margin-top: 10px;
+         padding: 10px;
+         background-color: #4CAF50;
+         color: white;
+         border: none;
+         border-radius: 6px;
+         cursor: pointer;
+      }
+
+      #browseBtn:hover {
+         background-color: #45a049;
+      }
+   </style>
+</head>
+
+<body>
+
+   <!-- 左邊 Flex 預覽區 -->
+   <div class="chatbox left-panel">
+      <div id="flexDisplay"></div>
+   </div>
+
+   <!-- 右邊 JSON 編輯區 -->
+   <div class="right-panel">
+      <div id="jsoneditor"></div>
+      <button id="browseBtn">瀏覽</button>
+   </div>
+
+   <script>
+      // 初始化 JSONEditor
+      const editorContainer = document.getElementById("jsoneditor");
+      const editor = new JSONEditor(editorContainer, {
+         mode: "code",
+         modes: ["code", "tree", "text"], // 可切換模式
+         onError: err => alert("JSON 錯誤: " + err)
+      });
+
+      // 預設 JSON（你可換成你要的初始值）
+      editor.set({
+         "type": "bubble",
+         "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+               { "type": "text", "text": "Hello Flex!" }
+            ]
+         }
+      });
+
+      // 按鈕事件：取得 JSON → 渲染左側 Flex
+      document.getElementById("browseBtn").addEventListener("click", function () {
+         try {
+            const json = editor.get();  // 取得 JSON 物件
+            const finalJson = {
+               type: "flex",
+               altText: "Flex UI",
+               contents: json
+            };
+
+            document.getElementById("flexDisplay").innerHTML = ""; // 清空舊畫面
+            flex2html("flexDisplay", finalJson);
+
+         } catch (e) {
+            alert("JSON 格式錯誤，請檢查內容");
+         }
+      });
+   </script>
+
+</body>
+
+</html>
